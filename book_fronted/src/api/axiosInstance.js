@@ -1,6 +1,6 @@
 import axios from "axios"
 import {getAuthToken} from "../utils/utility"
-export const host = "http://localhost:8000"
+export const host = "https://bookjoy.onrender.com"
 
 const axiosInstance = axios.create({
     baseURL: host,
