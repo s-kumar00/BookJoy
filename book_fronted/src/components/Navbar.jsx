@@ -9,13 +9,19 @@ import { jwtDecode } from "jwt-decode";
 import { toast } from "react-toastify";
 import Notification from "../popupComp/Notification";
 import { FaOpencart } from "react-icons/fa";
-// import ModeSwitch from "./ModeSwitch";
+import { FiMenu } from "react-icons/fi";
+import { RxCross2 } from "react-icons/rx";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 const Navbar = () => {
   const [isPopupOpen, setPopupOpen] = useState(false);
   const [token, setToken] = useState(null);
   const [darkMode, setDarkMode] = useState(false);
+  const [toggle, setToggle] = useState(false); // Changed initial state to false for menu toggle
+
+  const handleToggle = () => {
+    setToggle(!toggle);
+  };
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -47,7 +53,7 @@ const Navbar = () => {
 
   return (
     <div className={darkMode ? "dark" : ""}>
-      <nav className="bg-white border rounded-md shadow-neutral-500 border-gray-200 dark:bg-gray-900  dark:text-white">
+      <nav className="bg-white border rounded-md shadow-neutral-500 border-gray-200 dark:bg-gray-900  dark:text-white relative">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           <Link
             to="/"
@@ -61,6 +67,17 @@ const Navbar = () => {
             <span className="self-center text-2xl font-semibold whitespace-nowrap hidden md:block">
               Books
             </span>
+            {toggle ? (
+              <RxCross2
+                className="text-3xl block sm:hidden"
+                onClick={handleToggle}
+              />
+            ) : (
+              <FiMenu
+                className="text-3xl block sm:hidden"
+                onClick={handleToggle}
+              />
+            )}
           </Link>
           <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse gap-3">
             {token == null ? (
@@ -99,8 +116,10 @@ const Navbar = () => {
 
             {isPopupOpen && <PopSign onClose={handleClosePopup} />}
           </div>
-          <div className="w-full md:w-auto md:order-1">
-            <ul className="flex flex-col md:flex-row md:space-x-8 rtl:space-x-reverse font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:border-0 md:bg-white md:dark:bg-gray-900 dark:border-white dark:shadow-md">
+          {/* Popup Menu */}
+
+          <div className="w-full md:w-auto md:order-1 hidden sm:block">
+            <ul className="flex flex-col md:flex-row font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:border-0 md:bg-white md:dark:bg-gray-900 dark:border-white dark:shadow-md">
               {[
                 { to: "/", label: "Home", className: "home" },
                 { to: "/about", label: "About" },
@@ -120,6 +139,30 @@ const Navbar = () => {
               ))}
             </ul>
           </div>
+
+          {toggle && (
+            <div className="absolute z-50 w-2/4 text-center top-full p-2 left-0 bg-white shadow-md border border-gray-200 dark:bg-gray-900 dark:border-white">
+              <ul className="flex flex-col p-2 gap-y-4 md:flex-row font-medium md:border-0 md:bg-white md:dark:bg-gray-900 dark:border-white dark:shadow-md">
+                {[
+                  { to: "/", label: "Home", className: "home" },
+                  { to: "/about", label: "About" },
+                  { to: "/blog", label: "Services" },
+                  { to: "/shop", label: "Shop" },
+                  { to: "/", label: "Contact" },
+                ].map((item, index) => (
+                  <li key={index}>
+                    <Link
+                      to={item.to}
+                      className={`nav-link ${item.className && item.className}`}
+                      aria-current={item.label === "Home" ? "page" : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </nav>
     </div>
